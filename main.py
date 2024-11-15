@@ -8,10 +8,7 @@ from wave_modulator import WaveModulator
 
 class Application:
     def __init__(self):
-        self.modulator = WaveModulator(voltage_amplitude=100, frequency=59)
-
-    def __del__(self):
-        print("Deleted Application class.")
+        self.modulator = WaveModulator(voltage_amplitude=100)
 
     def build(self):
         fig, line = self.modulator.sin()
@@ -53,6 +50,7 @@ class UserInterface:
 
         self.root.overrideredirect(True)
 
+        # I set it to light for now, for it looks awful on auto/dark. (-:
         ctk.set_appearance_mode("light")
         ctk.set_default_color_theme("green")
 
@@ -122,8 +120,8 @@ class UserInterface:
     def update_figure(self):
         self.line = self.modulator.update_waveform(self.line, self.current_waveform)
         self.fig.axes[0].set_ylim(
-            -self.modulator.voltage_amplitude - 20,
-            self.modulator.voltage_amplitude + 20,
+            -self.modulator.voltage_amplitude - 10,
+            self.modulator.voltage_amplitude + 10,
         )
         self.canvas.draw()
 
