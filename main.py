@@ -8,7 +8,7 @@ from wave_modulator import WaveModulator
 
 class Application:
     def __init__(self):
-        self.modulator = WaveModulator(voltage_amplitude=100)
+        self.modulator = WaveModulator(voltage_amplitude=100, phase=45, frequency=1)
 
     def build(self):
         fig, line = self.modulator.sin()
@@ -40,15 +40,10 @@ class UserInterface:
         self.current_waveform = "sine"
         self.root = None
 
-    def __del__(self):
-        print("Deleted UserInterface class.")
-
     def build(self, update_callback, waveform_callback):
         self.root = ctk.CTk()
         self.root.wm_title(self.title)
         self.root.geometry(self.geometry)
-
-        self.root.overrideredirect(True)
 
         # I set it to light for now, for it looks awful on auto/dark. (-:
         ctk.set_appearance_mode("light")
@@ -98,24 +93,7 @@ class UserInterface:
         )
         dc_button.grid(row=0, column=3)
 
-        exit_btn = ctk.CTkButton(self.root, text="Exit", command=self.exit)
-        exit_btn.pack()
-
         self.root.mainloop()
-        self.root.protocol("WM_DELETE_WINDOW", self.exit)
-
-    def exit(self):
-        if self.root:
-            for callback in self.root.tk.eval("after info").split():
-                try:
-                    self.root.after_cancel(callback)
-                except Exception:
-                    pass
-            try:
-                self.root.destroy()
-            except tkinter.TclError:
-                pass
-        sys.exit(1)
 
     def update_figure(self):
         self.line = self.modulator.update_waveform(self.line, self.current_waveform)
@@ -131,5 +109,4 @@ class UserInterface:
         self.canvas.draw()
 
 
-app = Application()
-app.build()
+app: Application = Application().build()

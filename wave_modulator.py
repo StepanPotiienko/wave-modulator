@@ -5,30 +5,28 @@ import mplcursors
 
 
 class WaveModulator:
-    def __init__(self, voltage_amplitude):
+    def __init__(
+        self, voltage_amplitude: float = 220, phase: float = 0, frequency: float = 60
+    ):
         self.voltage_amplitude = voltage_amplitude
+        self.phase = phase
+        self.frequency = frequency
         self._X = numpy.linspace(0, 4 * numpy.pi, 400)
 
     def sin(self):
-        Y = numpy.sin(self._X) * self.voltage_amplitude
+        Y = numpy.sin(self.frequency * self._X + self.phase) * self.voltage_amplitude
         return self.create_plot(Y, "Sine")
 
     def square(self):
-        Y = (
-            signal.square(2 * numpy.pi * self.frequency * self._X)
-            * self.voltage_amplitude
-        )
+        Y = signal.square(self.frequency * self._X) * self.voltage_amplitude
         return self.create_plot(Y, "Square")
 
     def sawtooth(self):
-        Y = (
-            signal.sawtooth(2 * numpy.pi * self.frequency * self._X)
-            * self.voltage_amplitude
-        )
+        Y = signal.sawtooth(self.frequency * self._X) * self.voltage_amplitude
         return self.create_plot(Y, "Sawtooth")
 
     def dc(self):
-        Y = numpy.ones_like(self._X) * self.voltage_amplitude
+        Y = numpy.ones_like(self._X) * self.voltage_amplitude * self.frequency
         return self.create_plot(Y, "DC Voltage Level")
 
     def create_plot(self, Y, title):
@@ -52,13 +50,25 @@ class WaveModulator:
 
     def update_waveform(self, line, waveform):
         if waveform == "sine":
-            Y = numpy.sin(self._X) * self.voltage_amplitude
+            Y = (
+                numpy.sin(self.frequency * self._X + self.phase)
+                * self.voltage_amplitude
+            )
         elif waveform == "square":
-            Y = signal.square(2 * numpy.pi * self._X) * self.voltage_amplitude
+            Y = (
+                signal.square(self.frequency * self._X + self.phase)
+                * self.voltage_amplitude
+            )
         elif waveform == "sawtooth":
-            Y = signal.sawtooth(2 * numpy.pi * self._X) * self.voltage_amplitude
+            Y = (
+                signal.sawtooth(self.frequency * self._X + self.phase)
+                * self.voltage_amplitude
+            )
         elif waveform == "dc":
-            Y = numpy.ones_like(self._X) * self.voltage_amplitude
+            Y = (
+                numpy.ones_like(self.frequency * self._X + self.phase)
+                * self.voltage_amplitude
+            )
         else:
             raise ValueError("Unknown waveform type")
 
